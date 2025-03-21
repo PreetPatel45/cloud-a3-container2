@@ -1,0 +1,42 @@
+# Deployment for Container 2
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: container2-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: container2
+  template:
+    metadata:
+      labels:
+        app: container2
+    spec:
+      containers:
+      - name: container2
+        image: us-central1-docker.pkg.dev/cloud-assigmnet3/cloud-a3/cloud-a3-c2
+        ports:
+        - containerPort: 8000
+        volumeMounts:
+        - name: shared-storage
+          mountPath: /preet_PV_dir
+      imagePullSecrets:
+        - name: artifact-registry-secret
+      volumes:
+      - name: shared-storage
+        persistentVolumeClaim:
+          claimName: preet-pvc
+---
+# Service for Container 2
+apiVersion: v1
+kind: Service
+metadata:
+  name: container2-service
+spec:
+  selector:
+    app: container2
+  ports:
+  - protocol: TCP
+    port: 8000
+    targetPort: 8000
