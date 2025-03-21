@@ -1,5 +1,5 @@
 steps:
-  # Build the Docker image
+  # Build the Docker image with a unique tag using the commit SHA
   - name: 'gcr.io/cloud-builders/docker'
     args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/cloud-a3/cloud-a3-c2:$COMMIT_SHA', '.']
   
@@ -7,12 +7,19 @@ steps:
   - name: 'gcr.io/cloud-builders/docker'
     args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/cloud-a3/cloud-a3-c2:$COMMIT_SHA']
   
-  # Update the GKE deployment
+  # Apply the deployment file to create/update PVC, Deployment, and Service
+  - name: 'gcr.io/cloud-builders/kubectl'
+    args: ['apply', '-f', 'k8s-deploment2.yaml']
+    env:
+      - 'CLOUDSDK_COMPUTE_ZONE=us-central1-c'
+      - 'CLOUDSDK_CONTAINER_CLUSTER=cloud-a3-cluster'
+  
+  # Update the deployment to use the new image tag
   - name: 'gcr.io/cloud-builders/kubectl'
     args: ['set', 'image', 'deployment/container2-deployment', 'container2=us-central1-docker.pkg.dev/$PROJECT_ID/cloud-a3/cloud-a3-c2:$COMMIT_SHA']
     env:
       - 'CLOUDSDK_COMPUTE_ZONE=us-central1-c'
-      - 'CLOUDSDK_CONTAINER_CLUSTER=clod-a3-cluster'
+      - 'CLOUDSDK_CONTAINER_CLUSTER=cloud-a3-cluster'
 
 images:
   - 'us-central1-docker.pkg.dev/$PROJECT_ID/cloud-a3/cloud-a3-c2:$COMMIT_SHA'
