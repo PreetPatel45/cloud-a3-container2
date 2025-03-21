@@ -11,11 +11,11 @@ steps:
   - name: 'gcr.io/cloud-builders/kubectl'
     args: ['set', 'image', 'deployment/container2-deployment', 'container2=us-central1-docker.pkg.dev/$PROJECT_ID/cloud-a3/cloud-a3-c2:$COMMIT_SHA']
     env:
-      - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
-      - 'CLOUDSDK_CONTAINER_CLUSTER=preet-cluster'
+      - 'CLOUDSDK_COMPUTE_ZONE=us-central1-c'
+      - 'CLOUDSDK_CONTAINER_CLUSTER=clod-a3-cluster'
 
 images:
   - 'us-central1-docker.pkg.dev/$PROJECT_ID/cloud-a3/cloud-a3-c2:$COMMIT_SHA'
-  
+
 options:
   logging: CLOUD_LOGGING_ONLY
